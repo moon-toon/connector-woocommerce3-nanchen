@@ -320,21 +320,25 @@ class CustomerOrderItem extends BaseController
     /**
      * @param float $totalNet
      * @param float $totalGross
+     * @deprecated $wooCommerceRoundPrecision
+     * @param int $vatRoundPrecision
      * @return float
      */
     private function calculateVat(float $totalNet, float $totalGross, $wooCommerceRoundPrecision = 2, int $vatRoundPrecision = 2): float
     {
+        $totalGrossPrecision = Util::getDecimalPrecision($totalGross);
+
         $vat = .0;
         if ($totalNet > 0 && $totalGross > 0 && $totalGross > $totalNet) {
             $vat = round($totalGross / $totalNet, $vatRoundPrecision) * 100 - 100;
         }
 
-        $totalGrossCalculated = round(($totalNet * ($vat / 100 + 1)), $wooCommerceRoundPrecision);
+        $totalGrossCalculated = round(($totalNet * ($vat / 100 + 1)), $totalGrossPrecision);
 
         $isCalcualtedGrossSame = abs($totalGrossCalculated - $totalGross) < 0.00001;
 
         if ($vatRoundPrecision <= 6 && $vat !== .0 && $isCalcualtedGrossSame === false) {
-            return $this->calculateVat($totalNet, $totalGross, $wooCommerceRoundPrecision, $vatRoundPrecision + 1);
+            return $this->calculateVat($totalNet, $totalGross, $totalGrossPrecision, $vatRoundPrecision + 1);
         }
 
         return round($vat, 2);

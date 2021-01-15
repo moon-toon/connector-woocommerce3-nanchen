@@ -4,6 +4,7 @@ namespace JtlWooCommerceConnector\Tests\Controllers\Order;
 
 use JtlWooCommerceConnector\Controllers\Order\CustomerOrderItem;
 use JtlWooCommerceConnector\Tests\AbstractTestCase;
+use JtlWooCommerceConnector\Utilities\Util;
 
 /**
  * Class CustomerOrderItemTest
@@ -19,11 +20,8 @@ class CustomerOrderItemTest extends AbstractTestCase
      * @param float $expectedVatRate
      * @throws \ReflectionException
      */
-    public function testCalculateVat(float $priceNet, float $priceGross, float $expectedVatRate)
+    public function testCalculateVat(float $priceNet, float $priceGross, float $expectedVatRate, int $grossPricePrecision = 2)
     {
-        $grossPricePrecision = strlen(substr((string)$priceGross, strpos((string)$priceGross, '.'))) - 1;
-        $grossPricePrecision = $grossPricePrecision < 2 ? 2 : $grossPricePrecision;
-
         $vatRate = $this->invokeMethodFromObject(new CustomerOrderItem(), 'calculateVat', $priceNet, $priceGross, $grossPricePrecision);
         $this->assertEquals($expectedVatRate, $vatRate);
     }
@@ -53,6 +51,13 @@ class CustomerOrderItemTest extends AbstractTestCase
             [2, 2, 0.],
             [9.99, 11.99, 20.],
             [9.95, 11.94, 20.],
+            [3.2750, 3.8973, 19],
+            [13.4, 15.54, 16],
+            [1.7155, 1.99, 16],
+            [1.2845, 1.49, 16],
+            [0, 100, 0],
+            [100, 0, 0],
+            [100.14526, 119, 19]
         ];
     }
 }

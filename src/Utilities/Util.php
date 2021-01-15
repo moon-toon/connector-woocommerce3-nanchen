@@ -34,8 +34,8 @@ final class Util extends Singleton
 
         $this->namespaceMapping = [
             'CustomerOrder' => 'Order\\',
-            'GlobalData'    => 'GlobalData\\',
-            'Product'       => 'Product\\',
+            'GlobalData' => 'GlobalData\\',
+            'Product' => 'Product\\',
         ];
     }
 
@@ -95,7 +95,7 @@ final class Util extends Singleton
 
         $taxRates = \WC_Tax::find_rates([
             'tax_class' => $taxClass,
-            'country'   => $countryIso,
+            'country' => $countryIso,
         ]);
 
         if (!empty($taxRates)) {
@@ -153,11 +153,12 @@ final class Util extends Singleton
      *
      * @return bool|string
      */
-    public static function getNetPriceCutted($price, $pd){
-        $position = strrpos((string)$price,'.');
+    public static function getNetPriceCutted($price, $pd)
+    {
+        $position = strrpos((string)$price, '.');
 
-        if($position > 0){
-            $cut = substr($price,0,$position + 1 + $pd);
+        if ($position > 0) {
+            $cut = substr($price, 0, $position + 1 + $pd);
             $price = $cut;
         }
 
@@ -186,7 +187,7 @@ final class Util extends Singleton
             $uid = '';
         }
 
-        return (string) $uid;
+        return (string)$uid;
     }
 
     /**
@@ -495,5 +496,15 @@ final class Util extends Singleton
             $pd = 4;
         }
         return $pd;
+    }
+
+    /**
+     * @param float $number
+     * @return int
+     */
+    public static function getDecimalPrecision(float $number): int
+    {
+        $explode = explode('.', (string)$number);
+        return isset($explode[1]) ? strlen($explode[1]) : 0;
     }
 }
