@@ -1,5 +1,3 @@
-plugins/
-!plugins/.gitkeep
 composer.lock
 vendor/**
 config/config.json

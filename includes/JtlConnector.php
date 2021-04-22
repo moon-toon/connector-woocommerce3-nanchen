@@ -4,6 +4,17 @@
  * @author    Jan Weskamp <jan.weskamp@jtl-software.com>
  * @copyright 2010-2013 JTL-Software GmbH
  */
+
+if ( ! function_exists('write_log')) {
+    function write_log ( $log )  {
+       if ( is_array( $log ) || is_object( $log ) ) {
+          error_log( print_r( $log, true ) );
+       } else {
+          error_log( $log );
+       }
+    }
+}
+
 final class JtlConnector
 {
     protected static $_instance = null;
@@ -19,6 +30,26 @@ final class JtlConnector
     public static function capture_request()
     {
         global $wp;
+
+        if (!empty($wp->request) && ($wp->request === 'jtlconnector_ext' || $wp->request === 'index.php/jtlconnector_ext')) {
+            if (session_status() === PHP_SESSION_ACTIVE) {
+                session_destroy();
+            }
+            if (isset($_POST['token']) && $_POST['token'] == '7822184a-41ec-45a4-9452-3a75ad6ee3b3') {
+                if(isset($_POST['orderids'])) {
+                    $orders = explode(",",$_POST['orderids']);
+                    foreach ($orders as $orderid) {
+                        $order = wc_get_order($orderid);
+                        $ret = $order->set_status('approved', '' , false);
+                        $order->save();
+                        write_log("Changed order status from id: " .$orderid);
+                        write_log($ret);
+                    }      
+                }
+                echo "saved";
+            }
+            exit;
+        }
         
         if (!empty($wp->request) && ($wp->request === 'jtlconnector' || $wp->request === 'index.php/jtlconnector')) {
             $application = null;

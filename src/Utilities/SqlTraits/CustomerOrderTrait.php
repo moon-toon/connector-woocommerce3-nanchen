@@ -37,6 +37,10 @@ trait CustomerOrderTrait
             $status .= ", 'wc-completed'";
         }
 
+        if ( true ) { //TODO check for order approval plugin in the future
+		    $status .= ", 'wc-approval-waiting', 'wc-approved', 'wc-rejected'";
+		}
+
         $since = Config::get(Config::OPTIONS_PULL_ORDERS_SINCE);
         $where = (!empty($since) && strtotime($since) !== false) ? "AND p.post_date > '{$since}'" : '';
 
