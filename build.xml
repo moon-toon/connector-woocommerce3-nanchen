@@ -9,6 +9,12 @@
         <mkdir dir="./dist/woo-jtl-connector/plugins"/>
         <mkdir dir="./dist/woo-jtl-connector/tmp"/>
 
+        <copy todir="./dist/woo-jtl-connector/plugins/">
+            <fileset dir="./plugins">
+                <include name="mh/"/>
+            </fileset>
+        </copy>
+
         <copy todir="./dist/woo-jtl-connector/config">
             <fileset dir="./config">
                 <include name="config.json"/>
